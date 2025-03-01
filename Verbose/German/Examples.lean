@@ -164,9 +164,9 @@ Beweis:
   _             = ε                                        durch berechnung
 QED
 
-Beispiel "Eine steigende Folge mit einem endlichen Supremum konvergiert gegen dieses."
+Beispiel "Eine wachsende Folge mit einem endlichen Supremum konvergiert gegen dieses."
   Gegeben: (u : ℕ → ℝ) (M : ℝ)
-  Annahmen: (h : M ist ein Supremum von u) (h' : u ist steigend)
+  Annahmen: (h : M ist ein Supremum von u) (h' : u ist wachsend)
   Konklusion: u konvergiert gegen M
 Beweis:
   Sei ε > 0
