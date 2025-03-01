@@ -1,5 +1,5 @@
 import Mathlib.Topology.MetricSpace.Basic
-import DiffEins.German.All
+import Verbose.German.All
 
 def continuous_function_at (f : ℝ → ℝ) (x₀ : ℝ) :=
 ∀ ε > 0, ∃ δ > 0, ∀ x, |x - x₀| ≤ δ → |f x - f x₀| ≤ ε
@@ -27,11 +27,11 @@ variable {α : Type*}
 /- The Mathlib definition of `Set.Subset` uses a strict-implicit
 argument which confuses Verbose Lean. So let us replace it. -/
 
-protected def DiffEins.German.Subset (s₁ s₂ : Set α) :=
+protected def Verbose.German.Subset (s₁ s₂ : Set α) :=
   ∀ x, x ∈ s₁ → x ∈ s₂
 
-instance (priority := high) DiffEins.German.hasSubset : HasSubset (Set α) :=
-  ⟨DiffEins.German.Subset⟩
+instance (priority := high) Verbose.German.hasSubset : HasSubset (Set α) :=
+  ⟨Verbose.German.Subset⟩
 
 end Subset
 

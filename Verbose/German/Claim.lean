@@ -1,7 +1,7 @@
 import Verbose.Tactics.Lets
-import DiffEins.German.Common
-import DiffEins.German.We
-import DiffEins.German.Since
+import Verbose.German.Common
+import Verbose.German.We
+import Verbose.German.Since
 
 open Lean Verbose.German
 

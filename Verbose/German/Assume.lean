@@ -1,4 +1,4 @@
-import DiffEins.German.Fix
+import Verbose.German.Fix
 
 open Lean Elab Tactic
 

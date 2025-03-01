@@ -1,5 +1,5 @@
 import Verbose.Tactics.By
-import DiffEins.German.Common
+import Verbose.German.Common
 
 open Lean Verbose.German
 

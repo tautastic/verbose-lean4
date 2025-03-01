@@ -1,5 +1,5 @@
 import Verbose.Tactics.Widget
-import DiffEins.German.Help
+import Verbose.German.Help
 
 namespace Verbose.German
 open Lean Meta Server

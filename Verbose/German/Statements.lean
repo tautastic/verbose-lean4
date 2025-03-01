@@ -1,6 +1,6 @@
 import Verbose.Tactics.Statements
 import Verbose.Tactics.Common
-import DiffEins.German.Widget
+import Verbose.German.Widget
 
 open Lean Meta Elab Command Parser Tactic
 

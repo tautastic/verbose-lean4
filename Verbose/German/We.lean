@@ -1,5 +1,5 @@
 import Verbose.Tactics.We
-import DiffEins.German.Common
+import Verbose.German.Common
 
 open Lean Elab Parser Tactic Verbose.German
 

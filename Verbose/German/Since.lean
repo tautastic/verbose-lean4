@@ -1,5 +1,5 @@
 import Verbose.Tactics.Since
-import DiffEins.German.Common
+import Verbose.German.Common
 import Lean
 
 namespace Verbose.German

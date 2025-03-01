@@ -1,6 +1,6 @@
 import Verbose.Tactics.Help
 import Verbose.Tactics.Notations
-import DiffEins.German.Tactics
+import Verbose.German.Tactics
 
 open Lean Meta Elab Tactic Term Verbose
 

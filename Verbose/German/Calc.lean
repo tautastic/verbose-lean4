@@ -1,6 +1,6 @@
 import Verbose.Tactics.Calc
-import DiffEins.German.Common
-import DiffEins.German.We
+import Verbose.German.Common
+import Verbose.German.We
 
 section widget
 

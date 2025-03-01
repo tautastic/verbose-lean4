@@ -1,5 +1,5 @@
 import Verbose.Tactics.Set
-import DiffEins.German.Common
+import Verbose.German.Common
 
 elab "Setze " n:maybeTypedIdent " := " val:term : tactic => do
   let (n, ty) := match n with

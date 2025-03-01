@@ -1,4 +1,4 @@
-import DiffEins.Folgen.Skript
+import Verbose.German.ExampleLib
 
 Aufgabe "Stetigkeit impliziert sequenzielle Stetigkeit"
   Gegeben: (f : ℝ → ℝ) (u : ℕ → ℝ) (x₀ : ℝ)
