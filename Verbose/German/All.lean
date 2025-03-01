@@ -1,0 +1,11 @@
+import Verbose.Tactics.Notations
+import DiffEins.German.Assume
+import DiffEins.German.By
+import DiffEins.German.Calc
+import DiffEins.German.Claim
+import DiffEins.German.Fix
+import DiffEins.German.Lets
+import DiffEins.German.Since
+import DiffEins.German.We
+import DiffEins.German.Widget
+import DiffEins.German.Statements
