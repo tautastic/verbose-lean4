@@ -28,7 +28,7 @@ implement_endpoint (lang := de) mkComputeCalcDescr : MetaM String := pure "Begr�
 implement_endpoint (lang := de) mkComputeAssptTac : MetaM String := pure "durch annahme"
 implement_endpoint (lang := de) mkComputeAssptDescr : MetaM String := pure "Begründe durch annahme"
 implement_endpoint (lang := de) mkSinceCalcTac : MetaM String := pure "da"
-implement_endpoint (lang := de) mkSinceCalcHeader : MetaM String := pure "Begründe durhc"
+implement_endpoint (lang := de) mkSinceCalcHeader : MetaM String := pure "Begründe durch"
 implement_endpoint (lang := de) mkSinceCalcArgs (args : Array Format) : MetaM String := do
   return match args with
   | #[] => ""
