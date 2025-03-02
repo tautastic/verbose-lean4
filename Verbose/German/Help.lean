@@ -52,7 +52,7 @@ def describeHypStart (hyp : Name) (headDescr : String) : SuggestionM Unit :=
 implement_endpoint (lang := de) helpExistRelSuggestion (hyp : Name) (headDescr : String)
     (nameS ineqIdent hS : Ident) (ineqS pS : Term) : SuggestionM Unit := do
   describeHypShape hyp headDescr
-  pushCom "Man kann es verwenden mit:"
+  pushCom "Man kann sie verwenden mit:"
   pushTac `(tactic|Durch $hyp.ident:term erhalten wir $nameS:ident sodass ($ineqIdent : $ineqS) und ($hS : $pS))
   pushComment <| libres [nameS, ineqIdent, hS]
 
@@ -60,7 +60,7 @@ implement_endpoint (lang := de) helpConjunctionSuggestion (hyp : Name) (h₁I h�
     SuggestionM Unit := do
   let headDescr := "... und ..."
   describeHypShape hyp headDescr
-  pushCom "Man kann es verwenden mit:"
+  pushCom "Man kann sie verwenden mit:"
   pushTac `(tactic|Durch $hyp.ident:term erhalten wir ($h₁I : $p₁S) ($h₂I : $p₂S))
   pushComment <| libres [h₁I, h₂I]
 
@@ -68,153 +68,127 @@ implement_endpoint (lang := de) helpSinceConjunctionSuggestion (hyp : Name) (h�
     SuggestionM Unit := do
   let headDescr := "... und ..."
   describeHypShape hyp headDescr
-  pushCom "Man kann es verwenden mit:"
+  pushCom "Man kann sie verwenden mit:"
   pushTac `(tactic|Da $p₁S:term und $p₂S erhalten wir ($h₁I : $p₁S) und ($h₂I : $p₂S))
   pushComment <| libres [h₁I, h₂I]
 
 implement_endpoint (lang := de) helpDisjunctionSuggestion (hyp : Name) : SuggestionM Unit := do
   describeHypShape hyp "... oder ..."
-  pushCom "Man kann es verwenden mit:"
+  pushCom "Man kann sie verwenden mit:"
   pushTac `(tactic|Wir betrachten mit $hyp.ident:term)
 
 implement_endpoint (lang := de) helpSinceDisjunctionSuggestion (hyp : Name) (p₁S p₂S : Term) : SuggestionM Unit := do
   describeHypShape hyp "... oder ..."
-  pushCom "Man kann es verwenden mit:"
+  pushCom "Man kann sie verwenden mit:"
   pushTac `(tactic|Wir unterscheiden ob $p₁S:term oder $p₂S)
 
 implement_endpoint (lang := de) helpImplicationSuggestion (hyp HN H'N : Name) (closes : Bool)
     (le re : Expr) : SuggestionM Unit := do
-  pushCom "L'hypothèse {hyp} est une implication"
+  pushCom "Die Annahme {hyp} ist eine Implikation"
   if closes then do
-    pushCom "La conclusion de cette implication est le but courant"
-    pushCom "Wir peut donc utiliser cette hypothèse avec :"
-    pushTac `(tactic|Durch $hyp.ident:term genügt es zu beweisen $(← le.stx))
+    pushCom "Die Konklusion dieser Implikation ist das aktuelle Ziel"
+    pushCom "Daher kann man diese Annahme verwenden mit:"
+    pushTac `(tactic| Durch $hyp.ident:term genügt es zu beweisen $(← le.stx))
     flush
-    pushCom "Si vous disposez déjà d'une preuve {HN} de {← le.fmt} alors on peut utiliser :"
+    pushCom "Falls man bereits einen Beweis {HN} von {← le.fmt} hat, dann kann man verwenden:"
     pushTac `(tactic|Wir beenden den Beweis durch $hyp.ident:term angewendet auf $HN.ident)
   else do
-    pushCom "La prémisse de cette implication est {← le.fmt}"
-    pushCom "Si vous avez une démonstration {HN} de {← le.fmt}"
-    pushCom "vous pouvez donc utiliser cette hypothèse avec :"
+    pushCom "Die Voraussetzung dieser Implikation ist {← le.fmt}"
+    pushCom "Falls du einen Beweis {HN} von {← le.fmt} hast,"
+    pushCom "kannst du diese Annahme verwenden mit:"
     pushTac `(tactic|Durch $hyp.ident:term angewendet auf $HN.ident:term erhalten wir $H'N.ident:ident : $(← re.stx):term)
     pushComment <| libre H'N.ident
 
-
 implement_endpoint (lang := de) helpEquivalenceSuggestion (hyp hyp'N : Name) (l r : Expr) : SuggestionM Unit := do
-  pushCom "L'hypothèse {hyp} est une équivalence"
-  pushCom "Wir peut s'en servir pour remplacer le membre de gauche (c'est auf dire {← l.fmt}) par le membre de droite  (c'est auf dire {← r.fmt}) dans le but par :"
+  pushCom "Die Annahme {hyp} ist eine Äquivalenz"
+  pushCom "Man kann sie verwenden, um die linke Seite (nämlich {← l.fmt}) durch die rechte Seite (nämlich {← r.fmt}) im Ziel zu ersetzen mit:"
   pushTac `(tactic|Wir umschreiben mit $hyp.ident:term)
   flush
-  pushCom "Wir peut s'en servir pour remplacer le membre de droite dans par le membre de gauche dans le but par :"
+  pushCom "Man kann sie verwenden, um die rechte Seite im Ziel zu ersetzen mit:"
   pushTac `(tactic|Wir umschreiben mit ← $hyp.ident)
   flush
-  pushCom "Wir peut aussi effectuer de tels remplacements dans une hypothèse {hyp'N} par"
+  pushCom "Man kann solche Ersetzungen auch in einer Annahme {hyp'N} durchführen mit:"
   pushTac `(tactic|Wir umschreiben mit $hyp.ident:term in der Annahme $hyp'N.ident:ident)
   flush
-  pushCom " oder "
+  pushCom "oder"
   pushTac `(tactic|Wir umschreiben mit ← $hyp.ident:term in der Annahme $hyp'N.ident:ident)
 
 implement_endpoint (lang := de) helpEqualSuggestion (hyp hyp' : Name) (closes : Bool) (l r : Expr) :
     SuggestionM Unit := do
-  pushCom "L'hypothèse {hyp} est une égalité"
+  pushCom "Die Annahme {hyp} ist eine Gleichheit"
   if closes then
-    pushComment <| s!"Le but courant en découle immédiatement"
-    pushComment   "Man kann es verwenden mit :"
+    pushComment <| s!"The current goal follows from it immediately"
+    pushComment   "One can use it with:"
     pushTac `(tactic|Wir beenden den Beweis durch $hyp.ident:ident)
   else do
-    pushCom "Wir peut s'en servir pour remplacer le membre de gauche (c'est auf dire {l}) par le membre de droite  (c'est auf dire {r}) dans le but par :"
+    pushCom "Man kann sie verwenden, um die linke Seite (nämlich {← l.fmt}) durch die rechte Seite (nämlich {← r.fmt}) im Ziel zu ersetzen mit:"
     pushTac `(tactic|Wir umschreiben mit $hyp.ident:ident)
     flush
-    pushCom "Wir peut s'en servir pour remplacer le membre de droite dans par le membre de gauche dans le but par :"
+    pushCom "Man kann sie verwenden, um die rechte Seite im Ziel zu ersetzen mit:"
     pushTac `(tactic|Wir umschreiben mit ← $hyp.ident:ident)
     flush
-    pushCom "Wir peut aussi effectuer de tels remplacements dans une hypothèse {hyp'} par"
-    pushTac `(tactic|Wir umschreiben mit $hyp.ident:ident in der Annahme $hyp'.ident:ident)
-    flush
-    pushCom " oder "
-    pushTac `(tactic|Wir umschreiben mit ← $hyp.ident:ident in der Annahme $hyp'.ident:ident)
-    flush
-    pushCom "Wir peut aussi s'en servir comme étape dans un calcul, oder bien combinée linéairement auf d'autres par :"
-    pushTac `(tactic|Wir kombinieren [$hyp.ident:term, ?_])
-    pushCom "en remplaçant le point d'interrogation par un oder plusieurs termes prouvant des égalités."
-
-implement_endpoint (lang := de) helpSinceEqualSuggestion (hyp hyp' : Name)
-    (closes : Bool) (l r : Expr) (leS reS goalS : Term) : SuggestionM Unit := do
-  pushCom "L'hypothèse {hyp} est une égalité"
-  if closes then
-    pushComment <| s!"Le but courant en découle immédiatement"
-    pushComment   "Man kann es verwenden mit :"
-    let eq ← `($leS = $reS)
-    pushTac `(tactic|Da $eq:term folgt das Ziel durch $goalS)
-  else do
-    pushCom "Wir peut s'en servir pour remplacer le membre de gauche (c'est auf dire {l}) par le membre de droite  (c'est auf dire {r}) dans le but par :"
-    pushTac `(tactic|Wir umschreiben mit $hyp.ident:ident)
-    flush
-    pushCom "Wir peut s'en servir pour remplacer le membre de droite dans par le membre de gauche dans le but par :"
-    pushTac `(tactic|Wir umschreiben mit ← $hyp.ident:ident)
-    flush
-    pushCom "Wir peut aussi effectuer de tels remplacements dans une hypothèse {hyp'} par"
+    pushCom "Man kann solche Ersetzungen auch in einer Annahme {hyp'} durchführen mit:"
     pushTac `(tactic|Wir umschreiben mit $hyp.ident:ident in der Annahme $hyp'.ident:ident)
     flush
     pushCom "oder"
     pushTac `(tactic|Wir umschreiben mit ← $hyp.ident:ident in der Annahme $hyp'.ident:ident)
     flush
-    pushCom "Wir peut aussi s'en servir comme étape dans un calcul, oder bien combinée linéairement auf d'autres par :"
+    pushCom "Man kann sie auch in einem Rechenschritt verwenden oder linear mit anderen kombinieren mit:"
     pushTac `(tactic|Wir kombinieren [$hyp.ident:term, ?_])
-    pushCom "en remplaçant le point d'interrogation par un oder plusieurs termes prouvant des égalités."
+    pushCom "Ersetze das Fragezeichen durch einen oder mehrere Terme, die Gleichheiten beweisen."
 
 implement_endpoint (lang := de) helpIneqSuggestion (hyp : Name) (closes : Bool) : SuggestionM Unit := do
-  pushCom "L'hypothèse {hyp} est une inégalité"
+  pushCom "Die Annahme {hyp} ist eine Ungleichung"
   if closes then
     flush
-    pushCom "Le but courant en découle immédiatement"
-    pushCom "Man kann es verwenden mit :"
+    pushCom "Sie impliziert unmittelbar das aktuelle Ziel."
+    pushCom "Man kann sie verwenden mit:"
     pushTac `(tactic|Wir beenden den Beweis durch $hyp.ident:ident)
   else do
     flush
-    pushCom "Wir peut s'en servir comme étape dans un calcul, oder bien combinée linéairement auf d'autres par :"
+    pushCom "Man kann sie auch in einem Rechenschritt verwenden oder linear mit anderen kombinieren mit:"
     pushTac `(tactic|Wir kombinieren [$hyp.ident:term, ?_])
-    pushCom "en remplaçant le point d'interrogation par un oder plusieurs termes prouvant des égalités oder inégalités."
+    pushCom "Ersetze das Fragezeichen durch einen oder mehrere Terme, die Gleichheiten oder Ungleichheiten beweisen."
 
 implement_endpoint (lang := de) helpMemInterSuggestion (hyp h₁ h₂ : Name) (elemS p₁S p₂S : Term) :
     SuggestionM Unit := do
-  pushCom "L'hypothèse {hyp} est une appartenance auf une intersection"
-  pushCom "Man kann es verwenden mit :"
+  pushCom "Die Annahme {hyp} behauptet die Zugehörigkeit zu einer Schnittmenge"
+  pushCom "Man kann sie verwenden mit:"
   pushTac `(tactic|Durch $hyp.ident:term erhalten wir ($h₁.ident : $elemS ∈ $p₁S) ($h₂.ident : $elemS ∈ $p₂S))
   pushComment <| libres [h₁.ident, h₂.ident]
 
 implement_endpoint (lang := de) helpMemUnionSuggestion (hyp : Name) :
     SuggestionM Unit := do
-  pushCom "L'hypothèse {hyp} est une appartenance auf une réunion"
-  pushCom "Man kann es verwenden mit :"
+  pushCom "Die Annahme {hyp} behauptet die Zugehörigkeit zu einer Vereinigung"
+  pushCom "Man kann sie verwenden mit:"
   pushTac `(tactic|Wir betrachten mit $hyp.ident)
 
 implement_endpoint (lang := de) helpGenericMemSuggestion (hyp : Name) : SuggestionM Unit := do
-  pushCom "L'hypothèse {hyp} est une appartenance"
+  pushCom "Die Annahme {hyp} ist eine Zugehörigkeit"
 
 implement_endpoint (lang := de) helpContradictionSuggestion (hypId : Ident) : SuggestionM Unit := do
-  pushComment <| "Cette hypothèse est une contradiction."
-  pushCom "Wir peut en déduire tout ce qu'on veut par :"
+  pushComment <| "This assumption is a contradiction."
+  pushCom "Man kann daraus beliebige Aussagen folgern mit:"
   pushTac `(tactic|(Wir beweisen dass es ein Widerspruch ist
                     Wir beenden den Beweis durch $hypId:ident))
 
 implement_endpoint (lang := de) helpSubsetSuggestion (hyp x hx hx' : Name)
     (r : Expr) (l ambientTypePP : Format) : SuggestionM Unit := do
-  pushCom "L'hypothèse {hyp} affirme l'inclusion de {l} dans {← r.fmt}."
-  pushCom "Wir peut s'en servir avec :"
-  pushTac `(tactic|Durch $hyp.ident:ident angewendet auf $x.ident mit $hx.ident erhalten wir $hx'.ident:ident : $x.ident ∈ $(← r.stx))
-  pushCom "où {x} est {describe ambientTypePP} und {hx} est une démonstration du fait que {x} ∈ {l}"
+  pushCom "Die Annahme {hyp} stellt sicher, dass {l} in {← r.fmt} enthalten ist."
+  pushCom "Man kann sie verwenden mit:"
+  pushTac `(tactic| Durch $hyp.ident:ident angewendet auf $x.ident mit $hx.ident erhalten wir $hx'.ident:ident : $x.ident ∈ $(← r.stx))
+  pushCom "wobei {x} {describe ambientTypePP} ist und {hx} beweist, dass {x} ∈ {l}."
   pushComment <| libre hx'.ident
 
 implement_endpoint (lang := de) assumptionClosesSuggestion (hypId : Ident) : SuggestionM Unit := do
-  pushCom "Cette hypothèse est exactement ce qu'il faut démontrer"
-  pushCom "Man kann es verwenden mit :"
+  pushCom "Diese Annahme ist genau das, was bewiesen werden muss."
+  pushCom "Man kann sie verwenden mit:"
   pushTac `(tactic|Wir beenden den Beweis durch $hypId:ident)
 
 implement_endpoint (lang := de) assumptionUnfoldingSuggestion (hypId : Ident) (expandedHypTypeS : Term) :
     SuggestionM Unit := do
-  pushCom "Cette hypothèse commence par l'application d'une définition."
-  pushCom "Wir peut l'expliciter avec :"
+  pushCom "Diese Annahme beginnt mit der Anwendung einer Definition."
+  pushCom "Man kann sie explizit machen mit:"
   pushTac `(tactic|Wir formulieren $hypId:ident um zu $expandedHypTypeS)
   flush
 
@@ -222,109 +196,109 @@ implement_endpoint (lang := de) helpForAllRelExistsRelSuggestion (hyp var_name' 
     (headDescr hypDescr : String) (t : Format) (hn'S ineqIdent : Ident) (ineqS p'S : Term) :
     SuggestionM Unit := do
   describeHypStart hyp headDescr
-  pushCom "Man kann es verwenden mit:"
+  pushCom "Man kann sie verwenden mit:"
   pushTac `(tactic|Durch $hyp.ident:term angewendet auf $n₀.ident mit $hn₀.ident erhalten wir $var_name'.ident:ident sodass ($ineqIdent : $ineqS) und ($hn'S : $p'S))
-  pushCom "où {n₀} est {describe t} und {hn₀} est une démonstration du fait que {hypDescr}."
+  pushCom "wobei {n₀} {describe t} ist und {hn₀} ein Beweis der Tatsache, dass {hypDescr} ist."
   pushComment <| libres [var_name'.ident, ineqIdent, hn'S]
 
 implement_endpoint (lang := de) helpForAllRelExistsSimpleSuggestion (hyp n' hn' n₀ hn₀ : Name)
     (headDescr n₀rel : String) (t : Format) (p'S : Term) : SuggestionM Unit := do
   describeHypStart hyp headDescr
-  pushCom "Man kann es verwenden mit:"
+  pushCom "Man kann sie verwenden mit:"
   pushTac `(tactic|Durch $hyp.ident:term angewendet auf $n₀.ident mit $hn₀.ident erhalten wir $n'.ident:ident sodass ($hn'.ident : $p'S))
-  pushCom "où {n₀} est {describe t} und h{n₀} est une démonstration du fait que {n₀rel}"
+  pushCom "wobei {n₀} {describe t} ist und {hn₀} ein Beweis der Tatsache, dass {n₀rel} ist."
   pushComment <| libres [n'.ident, hn'.ident]
 
 implement_endpoint (lang := de) helpForAllRelGenericSuggestion (hyp n₀ hn₀ : Name)
     (headDescr n₀rel : String) (t : Format) (newsI : Ident) (pS : Term) : SuggestionM Unit := do
   describeHypStart hyp headDescr
-  pushCom "Man kann es verwenden mit:"
+  pushCom "Man kann sie verwenden mit:"
   pushTac `(tactic|Durch $hyp.ident:term angewendet auf $n₀.ident mit $hn₀.ident erhalten wir ($newsI : $pS))
-  pushCom "où {n₀} est {describe t} und {hn₀} est une démonstration du fait que {n₀rel}"
+  pushCom "wobei {n₀} {describe t} ist und {hn₀} ein Beweis der Tatsache, dass {n₀rel} ist."
   pushComment <| libre newsI
 
 implement_endpoint (lang := de) helpForAllSimpleExistsRelSuggestion (hyp var_name' nn₀ : Name)
     (headDescr : String) (t : Format) (hn'S ineqIdent : Ident) (ineqS p'S : Term) :
     SuggestionM Unit := do
   describeHypStart hyp headDescr
-  pushCom "Man kann es verwenden mit:"
-  pushTac `(tactic|Durch $hyp.ident:term angewendet auf $nn₀.ident erhalten wir $var_name'.ident:ident sodass (ineqIdent : $ineqS) und ($hn'S : $p'S))
-  pushCom "où {nn₀} est {describe t}"
+  pushCom "Man kann sie verwenden mit:"
+  pushTac `(tactic|Durch $hyp.ident:term angewendet auf $nn₀.ident erhalten wir $var_name'.ident:ident sodass ($ineqIdent : $ineqS) und ($hn'S : $p'S))
+  pushCom "wobei {nn₀} {describe t} ist."
   pushComment <| libres [var_name'.ident, ineqIdent, hn'S]
 
 implement_endpoint (lang := de) helpForAllSimpleExistsSimpleSuggestion (hyp var_name' hn' nn₀  : Name)
     (headDescr : String) (t : Format) (p'S : Term) : SuggestionM Unit := do
   describeHypStart hyp headDescr
-  pushCom "Man kann es verwenden mit:"
+  pushCom "Man kann sie verwenden mit:"
   pushTac `(tactic|Durch $hyp.ident:term angewendet auf $nn₀.ident erhalten wir $var_name'.ident:ident sodass ($hn'.ident : $p'S))
-  pushCom "où {nn₀} est {describe t}"
+  pushCom "wobei {nn₀} {describe t} ist."
   pushComment <| libres [var_name'.ident, hn'.ident]
 
 implement_endpoint (lang := de) helpForAllSimpleForAllRelSuggestion (hyp nn₀ var_name'₀ H h : Name)
     (headDescr rel₀ : String) (t : Format) (p'S : Term) : SuggestionM Unit := do
   describeHypStart hyp headDescr
-  pushCom "Man kann es verwenden mit:"
+  pushCom "Man kann sie verwenden mit:"
   pushTac `(tactic|Durch $hyp.ident:term angewendet auf $nn₀.ident und $var_name'₀.ident mit $H.ident erhalten wir ($h.ident : $p'S))
-  pushCom "où {nn₀} und {var_name'₀} sont {describe_pl t} und {H} est une démonstration de {rel₀}"
+  pushCom "wobei {nn₀} und {var_name'₀} {describe_pl t} sind und {H} ein Beweis von {rel₀} ist."
   pushComment <| libre h.ident
 
 implement_endpoint (lang := de) helpForAllSimpleGenericSuggestion (hyp nn₀ hn₀ : Name) (headDescr : String)
     (t : Format) (pS : Term) : SuggestionM Unit := do
   describeHypStart hyp headDescr
-  pushCom "Man kann es verwenden mit:"
+  pushCom "Man kann sie verwenden mit:"
   pushTac `(tactic|Durch $hyp.ident:term angewendet auf $nn₀.ident erhalten wir ($hn₀.ident : $pS))
-  pushCom "où {nn₀} est {describe t}"
+  pushCom "wobei {nn₀} {describe t} ist."
   pushComment <| libre hn₀.ident
   flush
-  pushCom "Si cette hypothèse ne servira plus dans sa forme générale, on peut aussi spécialiser {hyp} par"
+  pushCom "Falls diese Annahme nicht mehr in ihrer allgemeinen Form verwendet wird, kann man {hyp} auch spezialisieren mit:"
   pushTac `(tactic|Wir verwenden $hyp.ident:ident auf $nn₀.ident)
 
 implement_endpoint (lang := de) helpForAllSimpleGenericApplySuggestion (prf : Expr) (but : Format) :
     SuggestionM Unit := do
   let prfS ← prf.toMaybeAppliedDE
-  pushCom "Da le but est {but}, on peut utiliser :"
+  pushCom "Da das Ziel {but} ist, kann man verwenden:"
   pushTac `(tactic|Wir beenden den Beweis durch $prfS)
 
 implement_endpoint (lang := de) helpExistsSimpleSuggestion (hyp n hn : Name) (headDescr : String)
     (pS : Term) : SuggestionM Unit := do
   describeHypShape hyp headDescr
-  pushCom "Man kann es verwenden mit:"
-  pushTac `(tactic| Durch $hyp.ident:term erhalten wir $n.ident:ident sodass ($hn.ident : $pS))
+  pushCom "Man kann sie verwenden mit:"
+  pushTac `(tactic|Durch $hyp.ident:term erhalten wir $n.ident:ident sodass ($hn.ident : $pS))
   pushComment <| libres [n.ident, hn.ident]
 
 implement_endpoint (lang := de) helpDataSuggestion (hyp : Name) (t : Format) : SuggestionM Unit := do
-  pushComment <| s!"L'objet {hyp}" ++ match t with
-          | "ℝ" => " est un nombre réel fixé."
-          | "ℕ" => " est un nombre entier naturel fixé."
-          | "ℤ" => " est un nombre entier relatif fixé."
-          | s => s!" : {s} est fixé."
+  pushComment <| s!"Das Objekt {hyp}" ++ match t with
+    | "ℝ" => " ist eine feste reelle Zahl."
+    | "ℕ" => " ist eine feste natürliche Zahl."
+    | "ℤ" => " ist eine feste ganze Zahl."
+    | s => s!" : {s} ist fest."
 
 implement_endpoint (lang := de) helpNothingSuggestion : SuggestionM Unit := do
-  pushCom "Je n'ai rien auf déclarer auf propos de cette hypothèse."
+  pushCom "Ich habe nichts zu dieser Annahme zu sagen."
   flush
 
 implement_endpoint (lang := de) helpNothingGoalSuggestion : SuggestionM Unit := do
-  pushCom "Je n'ai rien auf déclarer auf propos de ce but."
+  pushCom "Ich habe nichts zu diesem Ziel zu sagen."
   flush
 
 def descrGoalHead (headDescr : String) : SuggestionM Unit :=
- pushCom "Le but commence par «{headDescr}»"
+ pushCom "Das Ziel beginnt mit «{headDescr}»"
 
 def descrGoalShape (headDescr : String) : SuggestionM Unit :=
- pushCom "Le but est de la forme «{headDescr}»"
+ pushCom "Das Ziel hat die Form «{headDescr}»"
 
 def descrDirectProof : SuggestionM Unit :=
- pushCom "Une démonstration directe commence donc par:"
+ pushCom "Daher beginnt ein direkter Beweis mit:"
 
 implement_endpoint (lang := de) helpUnfoldableGoalSuggestion (expandedGoalTypeS : Term) :
     SuggestionM Unit := do
-  pushCom "Le but commence par l’application d’une définition."
-  pushCom "Wir peut l’expliciter par:"
+  pushCom "Das Ziel beginnt mit der Anwendung einer Definition."
+  pushCom "Man kann sie explizit machen mit:"
   pushTac `(tactic|Wir beweisen dass $expandedGoalTypeS)
   flush
 
 implement_endpoint (lang := de) helpAnnounceGoalSuggestion (actualGoalS : Term) : SuggestionM Unit := do
-  pushCom "L’étape suivante est d'annoncer:"
+  pushCom "Der nächste Schritt ist anzukündigen:"
   pushTac `(tactic|Wir beweisen jetzt dass $actualGoalS)
 
 implement_endpoint (lang := de) helpFixSuggestion (headDescr : String) (ineqS : TSyntax `fixDecl) :
@@ -337,32 +311,32 @@ implement_endpoint (lang := de) helpExistsRelGoalSuggestion (headDescr : String)
     (fullTgtS : Term) : SuggestionM Unit := do
   descrGoalHead headDescr
   descrDirectProof
-  pushTac `(tactic|Wir beweisen dass $n₀.ident funktioniert: $fullTgtS)
-  pushCom "où {n₀} est {describe t}"
+  pushTac `(tactic|Wir beweisen dass $n₀.ident funktioniert : $fullTgtS)
+  pushCom "ersetze {n₀} durch {describe t}"
 
 implement_endpoint (lang := de) helpExistsGoalSuggestion (headDescr : String) (nn₀ : Name) (t : Format)
     (tgt : Term) : SuggestionM Unit := do
   descrGoalHead headDescr
   descrDirectProof
-  pushTac `(tactic|Wir beweisen dass $nn₀.ident funktioniert: $tgt)
-  pushCom "où {nn₀} est {describe t}"
+  pushTac `(tactic|Wir beweisen dass $nn₀.ident funktioniert : $tgt)
+  pushCom "ersetze {nn₀} durch {describe t}"
 
 implement_endpoint (lang := de) helpConjunctionGoalSuggestion (p p' : Term) : SuggestionM Unit := do
   descrGoalShape "... und ..."
   descrDirectProof
   pushTac `(tactic|Wir beweisen zunächst dass $p)
-  pushCom "Une fois cette première démonstration achevée, il restera auf montrer que {← p'.fmt}"
+  pushCom "Nachdem dieser erste Beweis abgeschlossen ist, bleibt noch zu zeigen, dass {← p'.fmt}"
   flush
-  pushCom "Wir peut aussi commencer par"
+  pushCom "Man kann auch mit folgendem beginnen:"
   pushTac `(tactic|Wir beweisen zunächst dass $p')
-  pushCom "puis, une fois cette première démonstration achevée, il restera auf montrer que {← p.fmt}"
+  pushCom "dann, nachdem dieser erste Beweis abgeschlossen ist, bleibt noch zu zeigen, dass {← p.fmt}"
 
 implement_endpoint (lang := de) helpDisjunctionGoalSuggestion (p p' : Term) : SuggestionM Unit := do
-  descrGoalShape "... oder ..."
-  pushCom "Une démonstration directe commence donc par annoncer quelle alternative va être démontrée :"
+  descrGoalShape "... or ..."
+  pushCom "Daher beginnt ein direkter Beweis mit der Ankündigung, welche Alternative bewiesen wird:"
   pushTac `(tactic|Wir beweisen dass $p)
   flush
-  pushCom "oder bien :"
+  pushCom "oder:"
   pushTac `(tactic|Wir beweisen dass $p')
 
 implement_endpoint (lang := de) helpImplicationGoalSuggestion (headDescr : String) (Hyp : Name)
@@ -374,100 +348,99 @@ implement_endpoint (lang := de) helpImplicationGoalSuggestion (headDescr : Strin
 
 implement_endpoint (lang := de) helpEquivalenceGoalSuggestion (r l : Format) (rS lS : Term) :
     SuggestionM Unit := do
-  pushCom "Le but est une équivalence. Wir peut annoncer la démonstration de l'implication de la gauche vers la droite par :"
+  pushCom "Das Ziel ist eine Äquivalenz. Man kann den Beweis der Implikation von links nach rechts ankündigen mit:"
   pushTac `(tactic|Wir beweisen dass $lS → $rS)
-  pushCom "Une fois cette première démonstration achevée, il restera auf montrer que {r} → {l}"
+  pushCom "Nachdem dieser erste Satz bewiesen wurde, bleibt noch zu zeigen, dass {r} → {l}."
   flush
-  pushCom "Wir peut aussi commencer par"
+  pushCom "Man kann auch mit folgendem beginnen:"
   pushTac `(tactic|Wir beweisen dass $rS → $lS)
-  pushCom "puis, une fois cette première démonstration achevée, il restera auf montrer que {l} → {r}"
+  pushCom "dann, nachdem dieser erste Beweis abgeschlossen ist, bleibt noch zu zeigen, dass {l} → {r}."
 
 implement_endpoint (lang := de) helpSetEqSuggestion (l r : Format) (lS rS : Term) : SuggestionM Unit := do
   -- **FIXME** this discussion isn't easy to do using tactics.
-  pushCom "Le but est une égalité entre ensembles"
-  pushCom "Wir peut la démontrer par réécriture avec la commande `Wir umschreiben mit`"
-  pushCom "oder bien commencer un calcul par"
+  pushCom "Das Ziel ist eine Mengengleichheit."
+  pushCom "Man kann sie durch Umschreiben beweisen mit `Wir umschreiben mit`"
+  pushCom "oder eine Rechnung beginnen mit"
   pushCom "  calc {l} = sorry := by sorry"
   pushCom "  ... = {r} := by sorry"
-  pushCom "Wir peut bien sûr utiliser plus de lignes intermédiaires."
-  pushCom "Wir peut aussi la démontrer par double inclusion."
-  pushCom "Dans ce cas la démonstration commence par :"
+  pushCom "Man kann sie auch durch doppelte Inklusion beweisen."
+  pushCom "In diesem Fall beginnt der Beweis mit:"
   pushTac `(tactic|Wir beweisen zunächst dass $lS ⊆ $rS)
 
 implement_endpoint (lang := de) helpEqGoalSuggestion (l r : Format) : SuggestionM Unit := do
   -- **FIXME** this discussion isn't easy to do using tactics.
-  pushCom "Le but est une égalité"
-  pushCom "Wir peut la démontrer par réécriture avec la commande `Wir umschreiben mit`"
-  pushCom "oder bien commencer un calcul par"
+  pushCom "Das Ziel ist eine Gleichheit."
+  pushCom "Man kann sie durch Umschreiben beweisen mit `Wir umschreiben mit`"
+  pushCom "oder eine Rechnung beginnen mit"
   pushCom "  calc {l} = sorry := by sorry"
   pushCom "  ... = {r} := by sorry"
-  pushCom "Wir peut bien sûr utiliser plus de lignes intermédiaires."
-  pushCom "Wir peut aussi tenter des combinaisons linéaires d'hypothèses hyp₁ hyp₂... avec"
-  pushCom " Wir kombinieren [hyp₁, hyp₂]"
+  pushCom "Natürlich kann es mehr Zwischenschritte geben."
+  pushCom "Man kann auch eine lineare Kombination der Annahmen hyp₁, hyp₂... bilden mit:"
+  pushCom "  Wir kombinieren [hyp₁, hyp₂]"
 
 implement_endpoint (lang := de) helpIneqGoalSuggestion (l r : Format) (rel : String) : SuggestionM Unit := do
   -- **FIXME** this discussion isn't easy to do using tactics.
-  pushCom "Le but est une inégalité"
-  pushCom "Wir peut commencer un calcul par"
+  pushCom "Das Ziel ist eine Ungleichung."
+  pushCom "Man kann eine Rechnung beginnen mit"
   pushCom "  calc {l}{rel}sorry := by sorry "
   pushCom "  ... = {r} := by sorry "
-  pushCom "Wir peut bien sûr utiliser plus de lignes intermédiaires."
-  pushCom "La dernière ligne du calcul n'est pas forcément une égalité, cela peut être une inégalité."
-  pushCom "De même la première ligne peut être une égalité. Au total les symboles de relations"
-  pushCom "doivent s'enchaîner pour donner {rel}"
-  pushCom "Wir peut aussi tenter des combinaisons linéaires d'hypothèses hyp₁ hyp₂... avec"
-  pushCom " Wir kombinieren [hyp₁, hyp₂]"
+  pushCom "Natürlich kann es mehr Zwischenschritte geben."
+  pushCom "Die letzte Rechenzeile ist nicht unbedingt eine Gleichheit, sie kann auch eine Ungleichheit sein."
+  pushCom "Ebenso könnte die erste Zeile eine Gleichheit sein. Insgesamt müssen die Relationssymbole"
+  pushCom "verketten werden und ergeben {rel}"
+  pushCom "Man kann auch eine lineare Kombination der Annahmen hyp₁, hyp₂... bilden mit:"
+  pushCom "  Wir kombinieren [hyp₁, hyp₂]"
 
 implement_endpoint (lang := de) helpMemInterGoalSuggestion (elem le : Expr) : SuggestionM Unit := do
-  pushCom "Le but est l'appartenance de {← elem.fmt} auf l'intersection de {← le.fmt} avec un autre ensemble."
-  pushCom "Une démonstration directe commence donc par :"
+  pushCom "Das Ziel ist es zu beweisen, dass {← elem.fmt} zur Schnittmenge von {← le.fmt} mit einer anderen Menge gehört."
+  pushCom "Daher beginnt ein direkter Beweis mit:"
   pushTac `(tactic|Wir beweisen zunächst dass $(← elem.stx) ∈ $(← le.stx))
 
 implement_endpoint (lang := de) helpMemUnionGoalSuggestion (elem le re : Expr) : SuggestionM Unit := do
-  pushCom "Le but est l'appartenance de {← elem.fmt} auf la réunion de {← le.fmt} und {← re.fmt}."
-  pushCom "Une démonstration directe commence donc par :"
+  pushCom "Das Ziel ist es zu beweisen, dass {← elem.fmt} zur Vereinigung von {← le.fmt} und {← re.fmt} gehört."
+  descrDirectProof
   pushTac `(tactic|Wir beweisen dass $(← elem.stx) ∈ $(← le.stx))
   flush
-  pushCom "oder bien par"
+  pushCom "oder durch:"
   pushTac `(tactic|Wir beweisen dass $(← elem.stx) ∈ $(← re.stx))
 
 implement_endpoint (lang := de) helpNoIdeaGoalSuggestion : SuggestionM Unit := do
-  pushCom "Pas d’idée."
+  pushCom "Keine Ahnung."
 
 implement_endpoint (lang := de) helpSubsetGoalSuggestion (l r : Format) (xN : Name) (lT : Term) :
     SuggestionM Unit := do
-  pushCom "Le but est l’inclusion {l} ⊆ {r}"
-  pushCom "Une démonstration directe commence donc par:"
+  pushCom "Das Ziel ist die Inklusion {l} ⊆ {r}."
+  descrDirectProof
   pushTac `(tactic|Sei $xN.ident:ident ∈ $lT)
   pushComment <| libre xN.ident
 
 implement_endpoint (lang := de) helpFalseGoalSuggestion : SuggestionM Unit := do
-  pushCom "Le but est de montrer une contradiction."
-  pushCom "Wir peut par exemple appliquer une hypothèse qui est une négation"
-  pushCom "c'est auf dire, par définition, de la forme P ⇒ False."
+  pushCom "Das Ziel ist es, einen Widerspruch zu beweisen."
+  pushCom "Man kann eine Annahme anwenden, die eine Negation ist,"
+  pushCom "nämlich, per Definition, von der Form P → false."
 
 implement_endpoint (lang := de) helpContraposeGoalSuggestion : SuggestionM Unit := do
-  pushCom "Le but est une implication."
-  pushCom "Wir peut débuter une démonstration par contraposition par:"
+  pushCom "Das Ziel ist eine Implikation."
+  pushCom "Man kann einen Beweis durch Kontraposition beginnen mit:"
   pushTac `(tactic|Wir kontraponieren)
 
 implement_endpoint (lang := de) helpByContradictionSuggestion (hyp : Ident) (assum : Term) : SuggestionM Unit := do
-  pushCom "Wir peut débuter une démonstration par l’absurde par:"
+  pushCom "Man kann einen Beweis durch Widerspruch beginnen mit:"
   pushTac `(tactic|Nehmen wir für einen Widerspruch an $hyp:ident : $assum)
 
 implement_endpoint (lang := de) helpNegationGoalSuggestion (hyp : Ident) (p : Format) (assum : Term) :
     SuggestionM Unit := do
-  pushCom "Le but est de montrer la négation de {p}, c’est auf dire montrer que {p} implique une contradiction."
-  pushCom "Une démonstration directe commence donc par :"
+  pushCom "Das Ziel ist die Negation von {p}, was bedeutet, dass {p} einen Widerspruch impliziert."
+  pushCom "Daher beginnt ein direkter Beweis mit:"
   pushTac `(tactic|Angenommen $hyp:ident : $assum)
-  pushCom "Il restera auf montrer une contradiction."
+  pushCom "Und dann bleibt es, einen Widerspruch zu beweisen."
 
 implement_endpoint (lang := de) helpNeGoalSuggestion (l r : Format) (lS rS : Term) (Hyp : Ident):
     SuggestionM Unit := do
-  pushCom "Le but est de montrer la négation de {l} = {r}, c’est auf dire montrer que {l} = {r} implique une contradiction."
-  pushCom "Une démonstration directe commence donc par :"
+  pushCom "Das Ziel ist die Negation von {l} = {r}, was bedeutet, dass {l} = {r} einen Widerspruch impliziert."
+  pushCom "Daher beginnt ein direkter Beweis mit:"
   pushTac `(tactic|Angenommen $Hyp:ident : $lS = $rS)
-  pushCom "Il restera auf montrer une contradiction."
+  pushCom "Und dann bleibt es, einen Widerspruch zu beweisen."
 
 set_option linter.unusedVariables false
 
@@ -598,7 +571,7 @@ example : True ∨ False := by
   left
   trivial
 
-/-- info: Je n'ai rien auf déclarer auf propos de cette hypothèse. -/
+/-- info: Ich habe nichts zu dieser Annahme zu sagen. -/
 #guard_msgs in
 example (P : Prop) (h : P) : True := by
   hilfe h
@@ -757,7 +730,7 @@ example : ∃ n ≥ 1, True := by
   hilfe
   use 1
 
-/-- info: Je n'ai rien auf déclarer auf propos de cette hypothèse. -/
+/-- info: Ich habe nichts zu dieser Annahme zu sagen. -/
 #guard_msgs in
 example (h : Odd 3) : True := by
   hilfe h
@@ -837,7 +810,7 @@ example : False → True := by
   hilfe
   simp
 
-/-- info: Je n'ai rien auf déclarer auf propos de ce but. -/
+/-- info: Ich habe nichts zu diesem Ziel zu sagen. -/
 #guard_msgs in
 example : True := by
   hilfe
@@ -856,7 +829,7 @@ example : False → True := by
   Wir kontraponieren
   simp
 
-/-- info: Je n'ai rien auf déclarer auf propos de ce but. -/
+/-- info: Ich habe nichts zu diesem Ziel zu sagen. -/
 #guard_msgs in
 example : True := by
   hilfe
