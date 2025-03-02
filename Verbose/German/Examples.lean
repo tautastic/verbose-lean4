@@ -6,16 +6,16 @@ Aufgabe "Stetigkeit impliziert sequenzielle Stetigkeit"
   Konklusion: (f ∘ u) konvergiert gegen f x₀
 Beweis:
   Sei ε > 0
-  Durch hf angewendet auf ε mit ε_pos erhalten wir δ sodass
+  Durch hf angewendet auf ε mittels ε > 0 erhalten wir δ sodass
     (δ_pos : δ > 0) und (Hf : ∀ x, |x - x₀| ≤ δ ⇒ |f x - f x₀| ≤ ε)
 
-  Durch hu angewendet auf δ mit δ_pos erhalten wir N sodass
+  Durch hu angewendet auf δ mittels δ > 0 erhalten wir N sodass
     Hu : ∀ n ≥ N, |u n - x₀| ≤ δ
 
   Wir beweisen dass N funktioniert
   Sei n ≥ N
   Durch Hf angewendet auf u n genügt es zu beweisen dass |u n - x₀| ≤ δ
-  Wir beenden den Beweis durch Hu angewendet auf n mit n_ge
+  Wir beenden den Beweis durch Hu angewendet auf n mittels n ≥ N
 QED
 
 -- Variation without referring to any assumption label
@@ -43,7 +43,7 @@ Beweis:
   Wir beweisen dass ∃ N, ∀ n ≥ N, |u n - l| ≤ ε
   Wir beweisen dass 0 funktioniert
   Sei n ≥ 0
-  Berechnung |u n - l| = |l - l| durch h
+  Calc |u n - l| = |l - l| durch h
    _             = 0       durch berechnung
    _             ≤ ε       durch ε_pos
 QED
@@ -53,11 +53,11 @@ Beispiel "Eine Folge, die auf einen strikt positiven Grenzwert konvergiert, ist 
   Annahmen: (hl : l > 0) (h :u konvergiert gegen l)
   Konklusion: ∃ N, ∀ n ≥ N, u n ≥ l/2
 Beweis:
-  Durch h angewendet auf l/2 mit der Tatsache dass l/2 > 0
+  Durch h angewendet auf l/2 mittels l/2 > 0
     erhalten wir N sodass hN : ∀ n ≥ N, |u n - l| ≤ l/2
   Wir beweisen dass N funktioniert
   Sei n ≥ N
-  Durch hN angewendet auf n mit der Tatsache dass n ≥ N
+  Durch hN angewendet auf n mittels n ≥ N
     erhalten wir hN' : |u n - l| ≤ l/2
   Durch hN' erhalten wir (h₁ : -(l/2) ≤ u n - l) (h₂ : u n - l ≤ l/2)
   Wir beenden den Beweis durch h₁
@@ -70,9 +70,9 @@ Beispiel "Addition of convergent Folgen."
   Konklusion: (u + v) konvergiert gegen (l + l')
 Beweis:
   Sei ε > 0
-  Durch hu angewendet auf ε/2 mit der Tatsache dass ε/2 > 0 erhalten wir N₁
+  Durch hu angewendet auf ε/2 mittels ε/2 > 0 erhalten wir N₁
       sodass (hN₁ : ∀ n ≥ N₁, |u n - l| ≤ ε / 2)
-  Durch hv angewendet auf ε/2 mit der Tatsache dass ε/2 > 0 erhalten wir N₂
+  Durch hv angewendet auf ε/2 mittels ε/2 > 0 erhalten wir N₂
       sodass (hN₂ : ∀ n ≥ N₂, |v n - l'| ≤ ε / 2)
   Wir beweisen dass max N₁ N₂ funktioniert
   Sei n ≥ max N₁ N₂
@@ -81,7 +81,7 @@ Beweis:
     durch hN₁ angewendet auf n mit hn₁
   Fakt fact₂ : |v n - l'| ≤ ε/2
     durch hN₂ angewendet auf n mit hn₂
-  Berechnung
+  Calc
   |(u + v) n - (l + l')| = |(u n - l) + (v n - l')| durch berechnung
                      _ ≤ |u n - l| + |v n - l'|     durch abs_add
                      _ ≤  ε/2 + ε/2                 durch fact₁ und durch fact₂
@@ -110,10 +110,10 @@ Beweis:
     (hN'l : -ε ≤ w n - l) und (hN'd : w n - l ≤ ε)
   Wir beweisen dass |v n - l| ≤ ε
   Wir beweisen zunächst dass -ε ≤ v n - l
-  Berechnung -ε ≤ u n - l durch annahme
+  Calc -ε ≤ u n - l durch annahme
       _   ≤ v n - l da u n ≤ v n
   Wir beweisen jetzt dass v n - l ≤ ε
-  Berechnung v n - l ≤ w n - l  da v n ≤ w n
+  Calc v n - l ≤ w n - l  da v n ≤ w n
       _        ≤ ε        durch annahme
 QED
 
@@ -125,11 +125,11 @@ Beweis:
   Wir beweisen zunächst dass (u konvergiert gegen l) ⇒ ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| < ε
   Angenommen hyp : u konvergiert gegen l
   Sei ε > 0
-  Durch hyp angewendet auf ε/2 mit der Tatsache dass ε/2 > 0 erhalten wir N
+  Durch hyp angewendet auf ε/2 mittels ε/2 > 0 erhalten wir N
       sodass hN : ∀ n ≥ N, |u n - l| ≤ ε / 2
   Wir beweisen dass N funktioniert
   Sei n ≥ N
-  Berechnung |u n - l| ≤ ε/2  durch hN angewendet auf n mit der Tatsache dass n ≥ N
+  Calc |u n - l| ≤ ε/2  durch hN angewendet auf n mittels n ≥ N
        _         < ε    da ε > 0
   Wir beweisen jetzt dass (∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| < ε) ⇒ u konvergiert gegen l
   Angenommen hyp : ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| < ε
@@ -138,7 +138,7 @@ Beweis:
     erhalten wir N sodass hN : ∀ n ≥ N, |u n - l| < ε
   Wir beweisen dass N funktioniert
   Sei n ≥ N
-  Wir beenden den Beweis durch hN angewendet auf n mit der Tatsache dass n ≥ N
+  Wir beenden den Beweis durch hN angewendet auf n mittels n ≥ N
 QED
 
 
@@ -149,15 +149,15 @@ Beispiel "Eindeutigkeit von Grenzwerte."
 Beweis:
   Durch eq_of_forall_dist_le genügt es zu beweisen dass ∀ ε > 0, |l - l'| ≤ ε
   Sei ε > 0
-  Durch h angewendet auf ε/2 mit der Tatsache dass ε/2 > 0 erhalten wir N
+  Durch h angewendet auf ε/2 mittels ε/2 > 0 erhalten wir N
       sodass hN : ∀ n ≥ N, |u n - l| ≤ ε / 2
-  Durch h' angewendet auf  ε/2 mit der Tatsache dass ε/2 > 0 erhalten wir N'
+  Durch h' angewendet auf  ε/2 mittels ε/2 > 0 erhalten wir N'
       sodass hN' : ∀ n ≥ N', |u n - l'| ≤ ε / 2
   Durch hN angewendet auf max N N' mit le_max_left _ _
      erhalten wir hN₁ : |u (max N N') - l| ≤ ε / 2
   Durch hN' angewendet auf max N N' mit le_max_right _ _
     erhalten wir hN'₁ : |u (max N N') - l'| ≤ ε / 2
-  Berechnung |l - l'| = |(l-u (max N N')) + (u (max N N') -l')|  durch berechnung
+  Calc |l - l'| = |(l-u (max N N')) + (u (max N N') -l')|  durch berechnung
   _             ≤ |l - u (max N N')| + |u (max N N') - l'| durch abs_add
   _             = |u (max N N') - l| + |u (max N N') - l'| durch abs_sub_comm
   _             ≤  ε/2 + ε/2                               durch hN₁ und durch hN'₁
@@ -178,11 +178,11 @@ Beweis:
   Durch inf_M angewendet auf n erhalten wir (inf_M' : u n ≤ M)
   Wir beweisen zunächst dass -ε ≤ u n - M
   · Durch h' angewendet auf n₀ und n mit n_ge erhalten wir h'' : u n₀ ≤ u n
-    Berechnung
+    Calc
       -ε ≤ u n₀ - M durch hn₀
       _  ≤ u n - M durch h''
   Wir beweisen jetzt dass u n - M ≤ ε
-  · Berechnung
+  · Calc
      u n - M ≤ M - M durch inf_M'
      _       = 0     durch berechnung
      _       ≤ ε     durch ε_pos

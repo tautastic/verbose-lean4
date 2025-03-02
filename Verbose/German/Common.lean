@@ -13,11 +13,11 @@ def appliedToDETerm : TSyntax `appliedToDE → Array Term
 
 declare_syntax_cat usingStuffDE
 syntax " mit " sepBy(term, " und ") : usingStuffDE
-syntax " mit der Tatsache dass " term : usingStuffDE
+syntax " mittels " term : usingStuffDE
 
 def usingStuffDEToTerm : TSyntax `usingStuffDE → Array Term
 | `(usingStuffDE| mit $[$args]und*) => args
-| `(usingStuffDE| mit der Tatsache dass $x) => #[Unhygienic.run `(strongAssumption% $x)]
+| `(usingStuffDE| mittels $x) => #[Unhygienic.run `(strongAssumption% $x)]
 | _ => default -- This will never happen as long as nobody extends appliedToDE
 
 declare_syntax_cat maybeAppliedDE
@@ -38,7 +38,7 @@ to be the type of a prop argument. -/
 def listTermToMaybeAppliedDE : List Term → MetaM (TSyntax `maybeAppliedDE)
 | [x] => `(maybeAppliedDE|$x:term)
 | [x, y] => `(maybeAppliedDE|$x:term angewendet auf $y)
-| [x, y, z] => `(maybeAppliedDE|$x:term angewendet auf $y mit der Tatsache dass $z)
+| [x, y, z] => `(maybeAppliedDE|$x:term angewendet auf $y mittels $z)
 | x::y::l => `(maybeAppliedDE|$x:term angewendet auf $y:term mit [$(.ofElems l.toArray),*])
 | _ => pure ⟨Syntax.missing⟩ -- This should never happen
 

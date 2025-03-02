@@ -15,7 +15,7 @@ implement_endpoint (lang := de) createTwoStepsMsg : MetaM String := pure "Erstel
 @[server_rpc_method]
 def VerboseCalcPanelDE.rpc := mkSelectionPanelRPC' verboseSuggestSteps
   "Bitte wählen Sie Unterausdrücke im Ziel mit Shift-Klick aus."
-  "Erstellung eines neuen Berechnungsschritts"
+  "Erstellen eines neuen Rechenschritts"
   (extraCss := some "#suggestions {display:none}")
 
 /-- The calc widget. -/
@@ -85,7 +85,7 @@ syntax ppIndent(colGe term " denn " tacticSeq) : CalcStepDE
 syntax ppIndent(colGe term " durch?") : CalcStepDE
 syntax CalcStepDEs := ppLine withPosition(CalcFirstStepDE) withPosition((ppLine linebreak CalcStepDE)*)
 
-syntax (name := calcTacticDE) "Berechnung" CalcStepDEs : tactic
+syntax (name := calcTacticDE) "Calc" CalcStepDEs : tactic
 
 elab tk:"sinceCalcTacDE" facts:factsDE : tactic => withRef tk <| sinceCalcTac (factsDEToArray facts)
 
@@ -154,7 +154,7 @@ def convertCalcStepsDE (steps : TSyntax ``CalcStepDEs) : TermElabM (TSyntax ``ca
   | _ => throwUnsupportedSyntax
 
 elab_rules : tactic
-| `(tactic|Berechnung%$calcstx $stx) => do
+| `(tactic|Calc%$calcstx $stx) => do
   let steps : TSyntax ``CalcStepDEs := ⟨stx⟩
   let (steps, tks?) ← convertCalcStepsDE steps
   let views ← Lean.Elab.Term.mkCalcStepViews steps
@@ -177,41 +177,41 @@ elab_rules : tactic
       isFirst := false
   evalVerboseCalc (← `(tactic|calc%$calcstx $steps))
 
-syntax (name := Berechnung?DE) "Berechnung?" : tactic
+syntax (name := Calc?DE) "Calc?" : tactic
 
-elab "Berechnung?" : tactic =>
-  mkCalc?Tac "Berechnung erstellen" "Berechnung" "durch?"
+elab "Calc?" : tactic =>
+  mkCalc?Tac "Calc erstellen" "Calc" "durch?"
 
 setLang de
 
 example (a b : ℕ) : (a + b)^ 2 = 2*a*b + (a^2 + b^2) := by
-  Berechnung (a+b)^2 = a^2 + b^2 + 2*a*b durch berechnung
+  Calc (a+b)^2 = a^2 + b^2 + 2*a*b durch berechnung
   _ = 2*a*b + (a^2 + b^2) durch berechnung
 
 example (a b c d : ℕ) (h : a ≤ b) (h' : c ≤ d) : a + 0 + c ≤ b + d := by
-  Berechnung a + c    ≤ b + c durch h
+  Calc a + c    ≤ b + c durch h
    _            ≤ b + d durch h'
 
 example (a b c d : ℕ) (h : a ≤ b) (h' : c ≤ d) : a + 0 + c ≤ b + d := by
-  Berechnung a + 0 + c = a + c durch berechnung
+  Calc a + 0 + c = a + c durch berechnung
   _              ≤ b + c durch h
   _              ≤ b + d durch h'
 
 example (a b c d : ℕ) (h : a ≤ b) (h' : c ≤ d) : a + 0 + c ≤ b + d := by
-  Berechnung a + 0 + c = a + c durch berechnung
+  Calc a + 0 + c = a + c durch berechnung
   _              ≤ b + c da a ≤ b
   _              ≤ b + d da c ≤ d
 
 example (a b c d : ℕ) (h : a ≤ b) (h' : c ≤ d) : a + 0 + c ≤ b + d := by
-  Berechnung a + 0 + c = a + c durch berechnung
+  Calc a + 0 + c = a + c durch berechnung
   _              ≤ b + d da a ≤ b und c ≤ d
 
 example (a b c d : ℕ) (h : a ≤ b) (h' : c ≤ d) : a + 0 + c ≤ b + d := by
-  Berechnung a + 0 + c = a + c durch berechnung
+  Calc a + 0 + c = a + c durch berechnung
   _              ≤ b + d durch h und durch h'
 
 example (a b c d : ℕ) (h : a ≤ b) (h' : c ≤ d) : a + 0 + c ≤ b + d := by
-  Berechnung a + 0 + c = a + c durch berechnung
+  Calc a + 0 + c = a + c durch berechnung
   _              ≤ b + d durch h und durch h'
 
 def paire_fun  (f : ℝ → ℝ) := ∀ x, f (-x) = f x
@@ -220,43 +220,43 @@ example (f g : ℝ → ℝ) : paire_fun f → paire_fun g →  paire_fun (f + g)
   intro hf hg
   show ∀ x, (f+g) (-x) = (f+g) x
   intro x₀
-  Berechnung (f + g) (-x₀) = f (-x₀) + g (-x₀) durch berechnung
+  Calc (f + g) (-x₀) = f (-x₀) + g (-x₀) durch berechnung
   _                  = f x₀ + g (-x₀)    da f (-x₀) = f x₀
   _                  = f x₀ + g x₀       da g (-x₀) = g x₀
   _                  = (f + g) x₀        durch berechnung
 
 example (f g : ℝ → ℝ) : paire_fun f →  paire_fun (g ∘ f) := by
   intro hf x
-  Berechnung (g ∘ f) (-x) = g (f (-x)) durch berechnung
+  Calc (g ∘ f) (-x) = g (f (-x)) durch berechnung
                 _   = g (f x)    da f (-x) = f x
 
 example (f : ℝ → ℝ) (x : ℝ) (hx : f (-x) = f x ∧ 1 = 1) : f (-x) + 0 = f x := by
-  Berechnung f (-x) + 0 = f (-x) durch berechnung
+  Calc f (-x) + 0 = f (-x) durch berechnung
                 _   = f x  da f (-x) = f x
 
 example (f g : ℝ → ℝ) (hf : paire_fun f) (hg : paire_fun g) (x) :  (f+g) (-x) = (f+g) x := by
-  Berechnung (f + g) (-x) = f (-x) + g (-x) durch berechnung
+  Calc (f + g) (-x) = f (-x) + g (-x) durch berechnung
   _                 = f x + g (-x)    da paire_fun f
   _                 = f x + g x       da paire_fun g
   _                 = (f + g) x       durch berechnung
 
 
 example (ε : ℝ) (h : ε > 1) : 0 ≤ ε := by
-  Berechnung
+  Calc
     (0 : ℝ) ≤ 1 denn norm_num
     _       < ε durch h
 
 example (ε : ℝ) (h : ε > 1) : ε ≥ 0 := by
-  Berechnung
+  Calc
     (0 : ℝ) ≤ 1 denn norm_num
     _       < ε durch h
 
 example (ε : ℝ) (h : ε = 1) : ε+1 ≥ 2 := by
-  Berechnung
+  Calc
     ε + 1 = 1 + 1 denn rw [h]
     _     = 2 durch norm_num
 
 example (ε : ℝ) (h : ε = 1) : ε+1 ≤ 2 := by
-  Berechnung
+  Calc
     ε + 1 = 1 + 1 denn rw [h]
     _     = 2 durch norm_num
