@@ -64,7 +64,7 @@ Beweis:
 QED
 
 
-Beispiel "Addition of convergent Folgen."
+Beispiel "Addition konvergenter Folgen."
   Gegeben: (u v : ℕ → ℝ) (l l' : ℝ)
   Annahmen: (hu : u konvergiert gegen l) (hv : v konvergiert gegen l')
   Konklusion: (u + v) konvergiert gegen (l + l')
